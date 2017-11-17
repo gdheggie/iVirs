@@ -49,7 +49,12 @@ class PoemFeedViewController: UIViewController, UITableViewDelegate, UITableView
                         currentUser.username = thisUser.value(forKey: "username")! as! String
                         currentUser.userIcon = thisUser.value(forKey: "userIcon")! as! String
                         currentUser.userId = thisUser.value(forKey: "userId")! as! String
-                        currentUser.poems =  (thisUser.value(forKey: "poems") as? [String])!
+                        if let userPoems = thisUser.value(forKey: "poems") as? [String] {
+                            currentUser.snappedPoems = userPoems
+                        } else {
+                            let userNewPoems: [String] = []
+                            currentUser.snappedPoems = userNewPoems
+                        }
                         if let userSnaps = thisUser.value(forKey: "snappedPoems") as? [String] {
                             currentUser.snappedPoems = userSnaps
                         } else {
@@ -104,6 +109,11 @@ class PoemFeedViewController: UIViewController, UITableViewDelegate, UITableView
                 self.poemFeedTable.reloadData()
             }
         }
+    }
+    
+    @IBAction func unwindToMain(_ segue: UIStoryboardSegue) {
+        poems.removeAll()
+        showPoems()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

@@ -98,53 +98,62 @@ class PoemViewController: UIViewController {
     @IBAction func uploadPoem(_ sender: UIButton) {
         // save poem to firebase
         
-//        uploadedPoem.updateValue(([
-//            "title" : thePoem?.title as Any,
-//            "poem" : thePoem?.poem as Any,
-//            "poet" : thePoem?.poet as Any,
-//            "date" : thePoem?.date as Any,
-//            "poemId" : thePoem?.poemId as Any,
-//            "poetId" : thePoem?.poetId as Any,
-//            "poetView" : thePoem?.poetView as Any,
-//            "snapCount" : thePoem?.snapCount as Any] as NSDictionary), forKey: (thePoem?.poemId)!)
-//
-//        databaseRef.updateChildValues(uploadedPoem)
-//
-//        currentUser.poems.append((thePoem?.poemId)!)
-//        currentPoet.updateValue(([
-//                "username" : currentUser.username as Any,
-//                "userId" : currentUser.userId as Any,
-//                "userIcon" : currentUser.userIcon as Any,
-//                "poems" : currentUser.poems as Any,
-//                "snappedPoems" : currentUser.snappedPoems] as NSDictionary) , forKey: currentUser.userId)
-//
-//        databaseRef.updateChildValues(currentPoet)
+        uploadedPoem.updateValue(([
+            "title" : thePoem?.title as Any,
+            "poem" : thePoem?.poem as Any,
+            "poet" : thePoem?.poet as Any,
+            "date" : thePoem?.date as Any,
+            "poemId" : thePoem?.poemId as Any,
+            "poetId" : thePoem?.poetId as Any,
+            "poetView" : thePoem?.poetView as Any,
+            "snapCount" : thePoem?.snapCount as Any] as NSDictionary), forKey: (thePoem?.poemId)!)
+
+         databaseRef.child("Poems").updateChildValues(uploadedPoem)
+
+        currentUser.poems.append((thePoem?.poemId)!)
+        currentPoet.updateValue(([
+                "username" : currentUser.username as Any,
+                "userId" : currentUser.userId as Any,
+                "userIcon" : currentUser.userIcon as Any,
+                "poems" : currentUser.poems as Any,
+                "snappedPoems" : currentUser.snappedPoems] as NSDictionary) , forKey: currentUser.userId)
+
+        databaseRef.child("Users").updateChildValues(currentPoet)
         
-        performSegue(withIdentifier: "donePoem", sender: self)
+        performSegue(withIdentifier: "goToPoems", sender: self)
     }
     
     @IBAction func deletePoem(_ sender: UIButton) {
-        let alertController = UIAlertController(title: "Delete " + (thePoem?.title)!, message: nil, preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Delete " + (thePoem?.title)! +  "?", message: nil, preferredStyle: .alert)
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: {action in
             self.deleteThisPoem()
         })
         let noAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
         alertController.addAction(deleteAction)
         alertController.addAction(noAction)
-        present(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     func deleteThisPoem(){
-//        var count = 0
-//        databaseRef.child("Poems").child((thePoem?.poemId)!).removeValue()
-//        databaseRef.child("Users").child((currentUser.userId)).removeValue()
-//        for poem in currentUser.poems {
-//            if(poem == thePoem?.poemId) {
-//                currentUser.poems.remove(at: count)
-//            }
-//            count += 1
-//        }
-//        databaseRef.child("Users").child((currentUser.userId)).setValue(currentPoet, forKey: currentUser.userId)
-//    }
+        var count = 0
+        databaseRef.child("Poems").child((thePoem?.poemId)!).removeValue()
+        databaseRef.child("Users").child((currentUser.userId)).removeValue()
+        
+        for poem in currentUser.poems {
+            if(poem == thePoem?.poemId) {
+                currentUser.poems.remove(at: count)
+            }
+            count += 1
+        }
+        currentPoet.updateValue(([
+            "username" : currentUser.username as Any,
+            "userId" : currentUser.userId as Any,
+            "userIcon" : currentUser.userIcon as Any,
+            "poems" : currentUser.poems as Any,
+            "snappedPoems" : currentUser.snappedPoems] as NSDictionary) , forKey: currentUser.userId)
+        
+        databaseRef.child("Users").updateChildValues(currentPoet)
+        
+        performSegue(withIdentifier: "goToPoems", sender: self)
     }
 }

@@ -23,7 +23,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
               self.performSegue(withIdentifier: "toPoems", sender: self)
             }
         }
-    }    
+    }
+    
+    @IBAction func unwindToLogin(_ segue: UIStoryboardSegue) {}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
